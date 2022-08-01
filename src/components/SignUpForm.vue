@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="signUp">
+  <form @submit.prevent="handleSignUp">
     <input
       type="text"
       required
@@ -8,24 +8,30 @@
     />
     <input type="email" required placeholder="Email" v-model="email" />
     <input type="password" required placeholder="Password" v-model="password" />
+    <div class="error">{{ error }}</div>
     <button>Sign Up</button>
   </form>
 </template>
 
 <script>
 import { ref } from "@vue/reactivity";
+import useSignUp from "../composables/useSignUp";
+
 export default {
   setup() {
+    const { error, signUp } = useSignUp();
+
     // refs
     const displayName = ref("");
     const email = ref("");
     const password = ref("");
 
-    const signUp = () => {
-      console.log(displayName, email, password);
+    const handleSignUp = async () => {
+      await signUp(email.value, password.value, displayName.value);
+      console.log("User signed in successfully");
     };
 
-    return { displayName, email, password, signUp };
+    return { displayName, email, password, handleSignUp, error };
   },
 };
 </script>
