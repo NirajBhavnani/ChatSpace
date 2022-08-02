@@ -1,12 +1,13 @@
 <template>
   <div class="container">
     <Navbar />
+    <ChatForm />
   </div>
 </template>
 
 <script>
-import { auth } from "@/firebase/config";
 import Navbar from "../components/Navbar.vue";
+import ChatForm from "../components/ChatForm.vue";
 import getUser from "../composables/getUser";
 import { useRouter } from "vue-router";
 import { watch } from "@vue/runtime-core";
@@ -14,6 +15,7 @@ import { watch } from "@vue/runtime-core";
 export default {
   components: {
     Navbar,
+    ChatForm,
   },
   setup() {
     const { user } = getUser();
