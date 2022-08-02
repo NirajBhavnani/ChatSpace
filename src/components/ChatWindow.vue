@@ -2,8 +2,8 @@
   <div class="chat-window">
     <div v-if="error">{{ error }}</div>
     <div class="messages" v-if="documents">
-      <div v-for="doc in documents" :key="doc.id" class="single">
-        <span class="created-at">{{ doc.createdAt.toDate() }}</span>
+      <div v-for="doc in formattedDocs" :key="doc.id" class="single">
+        <span class="created-at">{{ doc.createdAt }}</span>
         <span class="name">{{ doc.name }}</span>
         <span class="message">{{ doc.message }}</span>
       </div>
@@ -13,12 +13,24 @@
 
 <script>
 import getCollection from "../composables/getCollection";
+import { formatDistanceToNow } from "date-fns";
+import { computed } from "@vue/runtime-core";
 
 export default {
   setup() {
     const { documents, error } = getCollection("messages");
 
-    return { documents, error };
+    // we are creating a new computed property based on something that already exists
+    const formattedDocs = computed(() => {
+      if (documents.value) {
+        return documents.value.map((doc) => {
+          let time = formatDistanceToNow(doc.createdAt.toDate());
+          return { ...doc, createdAt: time };
+        });
+      }
+    });
+
+    return { documents, error, formattedDocs };
   },
 };
 </script>
