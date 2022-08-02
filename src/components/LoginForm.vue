@@ -12,7 +12,9 @@ import { ref } from "@vue/reactivity";
 import useLogin from "../composables/useLogin";
 
 export default {
-  setup() {
+  // setup has always 1st argument as props and 2nd argument as context
+  // context object contains the methods and properties
+  setup(props, context) {
     // refs
     const email = ref("");
     const password = ref("");
@@ -22,7 +24,8 @@ export default {
     const handleSignIn = async () => {
       await login(email.value, password.value);
       if (!error.value) {
-        console.log("User logged in successfully");
+        // emitting custom event in CompositionAPI
+        context.emit("login");
       }
     };
 
