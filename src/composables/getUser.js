@@ -7,7 +7,6 @@ const user = ref(auth.currentUser);
 
 // using auth object to listen to authentication changes
 auth.onAuthStateChanged((_user) => {
-  console.log("User state changed. Current user is: ", _user);
   user.value = _user;
 });
 
