@@ -1,5 +1,5 @@
 import { firestore } from "@/firebase/config";
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 
 const getCollection = (collectionName) => {
   const documents = ref(null);
@@ -11,7 +11,7 @@ const getCollection = (collectionName) => {
   // each time there's a change in the database, it sends us back a snap
   // and we fire a callback function when that happens and we get access to that snapshot
   // That snapshot contains all of the docs and the data of these docs
-  collectionRef.onSnapshot(
+  const unsubscribe = collectionRef.onSnapshot(
     (snap) => {
       let results = [];
       snap.docs.forEach((doc) => {
@@ -29,6 +29,12 @@ const getCollection = (collectionName) => {
       error.value = "Could not fetch data";
     }
   );
+
+  // When any component mounts, onSnapshot is called every time, so to overcome this problem
+  watchEffect((onInvalidate) => {
+    // unsubscribe from prev collection when watcher is stopped (component unmounted)
+    onInvalidate(() => unsubscribe());
+  });
 
   return { documents, error };
 };
